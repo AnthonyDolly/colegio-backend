@@ -7,6 +7,7 @@ import { EnvConfiguration } from './config/app.config';
 import { JoiValidationSchema } from './config/joi.validation';
 import { CommonModule } from './common/common.module';
 import { DocumenttypesModule } from './documenttypes/documenttypes.module';
+import { StatusesModule } from './statuses/statuses.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DocumenttypesModule } from './documenttypes/documenttypes.module';
     MongooseModule.forRoot(process.env.MONGODB),
     CommonModule,
     DocumenttypesModule,
+    StatusesModule,
   ],
   controllers: [],
   providers: [],
