@@ -10,6 +10,7 @@ import { DocumenttypesModule } from './documenttypes/documenttypes.module';
 import { StatusesModule } from './statuses/statuses.module';
 import { UsersModule } from './users/users.module';
 import { SeedModule } from './seed/seed.module';
+import { UserAssistanceModule } from './user_assistance/user_assistance.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SeedModule } from './seed/seed.module';
     StatusesModule,
     UsersModule,
     SeedModule,
+    UserAssistanceModule,
   ],
   controllers: [],
   providers: [],
