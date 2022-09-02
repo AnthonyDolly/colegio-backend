@@ -6,6 +6,7 @@ import { RolesModule } from './roles/roles.module';
 import { EnvConfiguration } from './config/app.config';
 import { JoiValidationSchema } from './config/joi.validation';
 import { CommonModule } from './common/common.module';
+import { DocumenttypesModule } from './documenttypes/documenttypes.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CommonModule } from './common/common.module';
     RolesModule,
     MongooseModule.forRoot(process.env.MONGODB),
     CommonModule,
+    DocumenttypesModule,
   ],
   controllers: [],
   providers: [],
