@@ -9,6 +9,7 @@ import { CommonModule } from './common/common.module';
 import { DocumenttypesModule } from './documenttypes/documenttypes.module';
 import { StatusesModule } from './statuses/statuses.module';
 import { UsersModule } from './users/users.module';
+import { AssistancesModule } from './assistances/assistances.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UsersModule } from './users/users.module';
     DocumenttypesModule,
     StatusesModule,
     UsersModule,
+    AssistancesModule,
   ],
   controllers: [],
   providers: [],
