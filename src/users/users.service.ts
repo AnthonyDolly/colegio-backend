@@ -1,0 +1,65 @@
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    try {
+      return await this.userModel.create(createUserDto);
+    } catch (error) {
+      this.handleExceptions(error);
+    }
+  }
+
+  async findAll() {
+    return await this.userModel
+      .find()
+      .populate({ path: 'documentType role', select: 'name -_id' });
+  }
+
+  async findOne(id: string) {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new BadRequestException(`User with id ${id} not found`);
+    }
+    return user;
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    await this.findOne(id);
+    try {
+      return await this.userModel.findByIdAndUpdate(id, updateUserDto);
+    } catch (error) {
+      this.handleExceptions(error);
+    }
+  }
+
+  async remove(id: string) {
+    await this.findOne(id);
+    return await this.userModel.findByIdAndDelete(id);
+  }
+
+  private handleExceptions(error: any) {
+    if (error.code === 11000) {
+      console.log(error);
+      throw new BadRequestException(
+        `User already exists in the database ${JSON.stringify(error.keyValue)}`,
+      );
+    }
+    console.log(error);
+    throw new InternalServerErrorException(`Check Server logs`);
+  }
+}

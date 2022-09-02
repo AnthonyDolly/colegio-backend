@@ -8,6 +8,7 @@ import { JoiValidationSchema } from './config/joi.validation';
 import { CommonModule } from './common/common.module';
 import { DocumenttypesModule } from './documenttypes/documenttypes.module';
 import { StatusesModule } from './statuses/statuses.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { StatusesModule } from './statuses/statuses.module';
     CommonModule,
     DocumenttypesModule,
     StatusesModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
