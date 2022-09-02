@@ -57,7 +57,9 @@ export class DocumenttypesService {
     if (error.code === 11000) {
       console.log(error);
       throw new BadRequestException(
-        `Role already exists in the database ${JSON.stringify(error.keyValue)}`,
+        `Documenttype already exists in the database ${JSON.stringify(
+          error.keyValue,
+        )}`,
       );
     }
     console.log(error);
