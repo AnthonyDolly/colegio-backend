@@ -1,0 +1,46 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { RequesttypesService } from './requesttypes.service';
+import { CreateRequesttypeDto } from './dto/create-requesttype.dto';
+import { UpdateRequesttypeDto } from './dto/update-requesttype.dto';
+import { ValidateMongoIdPipe } from './../common/pipes/validate-mongo-id.pipe';
+
+@Controller('requesttypes')
+export class RequesttypesController {
+  constructor(private readonly requesttypesService: RequesttypesService) {}
+
+  @Post()
+  create(@Body() createRequesttypeDto: CreateRequesttypeDto) {
+    return this.requesttypesService.create(createRequesttypeDto);
+  }
+
+  @Get()
+  findAll() {
+    return this.requesttypesService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id', ValidateMongoIdPipe) id: string) {
+    return this.requesttypesService.findOne(id);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ValidateMongoIdPipe) id: string,
+    @Body() updateRequesttypeDto: UpdateRequesttypeDto,
+  ) {
+    return this.requesttypesService.update(id, updateRequesttypeDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id', ValidateMongoIdPipe) id: string) {
+    return this.requesttypesService.remove(id);
+  }
+}

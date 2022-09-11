@@ -11,6 +11,7 @@ import { StatusesModule } from './statuses/statuses.module';
 import { UsersModule } from './users/users.module';
 import { SeedModule } from './seed/seed.module';
 import { UserAssistanceModule } from './user_assistance/user_assistance.module';
+import { RequesttypesModule } from './requesttypes/requesttypes.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UserAssistanceModule } from './user_assistance/user_assistance.module';
     UsersModule,
     SeedModule,
     UserAssistanceModule,
+    RequesttypesModule,
   ],
   controllers: [],
   providers: [],
