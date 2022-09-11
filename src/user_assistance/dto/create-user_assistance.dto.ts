@@ -1,4 +1,11 @@
-import { IsDate, IsMongoId, IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsMongoId,
+  IsNotEmpty,
+  ValidateNested,
+} from 'class-validator';
+import { CreateAssistanceDto } from './create-assistance.dto';
 
 export class CreateUserAssistanceDto {
   @IsNotEmpty()
@@ -6,10 +13,8 @@ export class CreateUserAssistanceDto {
   user: string;
 
   @IsNotEmpty()
-  @IsDate()
-  day: Date;
-
-  @IsNotEmpty()
-  @IsMongoId()
-  status: string;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAssistanceDto)
+  assistances: CreateAssistanceDto[];
 }

@@ -26,21 +26,34 @@ export class UserAssistanceController {
     return this.userAssistanceService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ValidateMongoIdPipe) id: string) {
-    return this.userAssistanceService.findOne(id);
+  @Get(':userId')
+  findOne(@Param('userId', ValidateMongoIdPipe) userId: string) {
+    return this.userAssistanceService.findOne(userId);
   }
 
-  @Patch(':id')
+  @Patch(':userId')
   update(
-    @Param('id', ValidateMongoIdPipe) id: string,
+    @Param('userId', ValidateMongoIdPipe) userId: string,
     @Body() updateUserAssistanceDto: UpdateUserAssistanceDto,
   ) {
-    return this.userAssistanceService.update(id, updateUserAssistanceDto);
+    return this.userAssistanceService.update(userId, updateUserAssistanceDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id', ValidateMongoIdPipe) id: string) {
-    return this.userAssistanceService.remove(id);
+  @Delete(':userId')
+  remove(@Param('userId', ValidateMongoIdPipe) userId: string) {
+    return this.userAssistanceService.remove(userId);
+  }
+
+  @Get('report/:month')
+  getReportByMonth(@Param('month') month: number) {
+    return this.userAssistanceService.getReportByMonth(month);
+  }
+
+  @Get('report/month/:month/user/:id')
+  getReportByMonthAndUser(
+    @Param('month') month: number,
+    @Param('id', ValidateMongoIdPipe) id: string,
+  ) {
+    return this.userAssistanceService.getReportByMonthAndUser(month, id);
   }
 }
