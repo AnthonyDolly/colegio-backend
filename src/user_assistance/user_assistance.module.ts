@@ -21,5 +21,6 @@ import {
   ],
   controllers: [UserAssistanceController],
   providers: [UserAssistanceService],
+  exports: [MongooseModule],
 })
 export class UserAssistanceModule {}
