@@ -6,6 +6,12 @@ export class Status extends Document {
   @Prop({
     required: true,
     unique: true,
+  })
+  code: number;
+
+  @Prop({
+    required: true,
+    unique: true,
     index: true,
   })
   name: string;
