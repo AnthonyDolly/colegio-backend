@@ -1,8 +1,28 @@
 version: '3'
 
 services:
+  colegiobapp:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: colegiob-docker
+    container_name: colegiobapp
+    restart: always # reiniciar el contenedor si se detiene
+    ports:
+      - '${PORT}:${PORT}'
+    # working_dir: /var/www/pokedex
+    environment:
+      MONGODB: ${MONGODB}
+      PORT: ${PORT}
+      DEFAULT_LIMIT: ${DEFAULT_LIMIT}
+    # volumes:
+    #   - ./:/var/www/pokedex
+
   db:
     image: mongo:5
+    container_name: mongo-colegio
     restart: always
     ports:
       - '27017:27017'
