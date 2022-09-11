@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UserAssistanceService } from './../user_assistance/user_assistance.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,11 +15,17 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly userAssistanceService: UserAssistanceService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      return await this.userModel.create(createUserDto);
+      const user = await this.userModel.create(createUserDto);
+      await this.userAssistanceService.create({
+        user: user._id.toString(),
+        assistances: [],
+      });
+      return user;
     } catch (error) {
       this.handleExceptions(error);
     }
