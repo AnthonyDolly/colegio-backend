@@ -5,9 +5,20 @@ import { CommonModule } from './../common/common.module';
 import { RolesModule } from './../roles/roles.module';
 import { DocumenttypesModule } from './../documenttypes/documenttypes.module';
 import { StatusesModule } from './../statuses/statuses.module';
+import { UsersModule } from './../users/users.module';
+import { UserAssistanceModule } from './../user_assistance/user_assistance.module';
+import { RequesttypesModule } from './../requesttypes/requesttypes.module';
 
 @Module({
-  imports: [RolesModule, DocumenttypesModule, StatusesModule, CommonModule],
+  imports: [
+    RolesModule,
+    DocumenttypesModule,
+    StatusesModule,
+    RequesttypesModule,
+    UserAssistanceModule,
+    UsersModule,
+    CommonModule,
+  ],
   controllers: [SeedController],
   providers: [SeedService],
 })
