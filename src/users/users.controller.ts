@@ -19,7 +19,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @Auth(ValidRoles.ADMINISTRADOR)
+  // @Auth(ValidRoles.ADMINISTRADOR)
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

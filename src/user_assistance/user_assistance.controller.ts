@@ -6,11 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UserAssistanceService } from './user_assistance.service';
 import { CreateUserAssistanceDto } from './dto/create-user_assistance.dto';
 import { UpdateUserAssistanceDto } from './dto/update-user_assistance.dto';
 import { ValidateMongoIdPipe } from './../common/pipes/validate-mongo-id.pipe';
+import { Auth, GetUser } from '../auth/decorators';
+import { ValidRoles } from '../auth/interfaces';
+import { User } from '../users/entities/user.entity';
+import { RegisterAssistanceDto } from './dto/register_assistance.dto';
+import { FilterUserAssistanceDto } from './dto/filter-user_assistance.dto';
 
 @Controller('user-assistance')
 export class UserAssistanceController {
@@ -22,8 +28,8 @@ export class UserAssistanceController {
   }
 
   @Get()
-  findAll() {
-    return this.userAssistanceService.findAll();
+  findAll(@Query() filterUserAssistanceDto?: FilterUserAssistanceDto) {
+    return this.userAssistanceService.findAll(filterUserAssistanceDto);
   }
 
   @Get(':userId')
@@ -31,12 +37,30 @@ export class UserAssistanceController {
     return this.userAssistanceService.findOne(userId);
   }
 
-  @Patch(':userId')
-  update(
+  @Post(':userId')
+  @Auth(ValidRoles.ADMINISTRADOR)
+  registerUserAssistance(
     @Param('userId', ValidateMongoIdPipe) userId: string,
-    @Body() updateUserAssistanceDto: UpdateUserAssistanceDto,
+    @Body() updateUserAssistanceDto: RegisterAssistanceDto,
+    @GetUser() user: User,
   ) {
-    return this.userAssistanceService.update(userId, updateUserAssistanceDto);
+    return this.userAssistanceService.registerUserAssistance(
+      userId,
+      updateUserAssistanceDto,
+      user,
+    );
+  }
+
+  @Patch('assistance/:assistanceId')
+  @Auth(ValidRoles.ADMINISTRADOR)
+  registerUserCheckOutTime(
+    @Param('assistanceId', ValidateMongoIdPipe) assistanceId: string,
+    @GetUser() user: User,
+  ) {
+    return this.userAssistanceService.registerUserCheckOutTime(
+      assistanceId,
+      user,
+    );
   }
 
   @Delete(':userId')

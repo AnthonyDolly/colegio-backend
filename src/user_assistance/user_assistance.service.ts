@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { User } from 'src/users/entities/user.entity';
 
 import { CreateUserAssistanceDto } from './dto/create-user_assistance.dto';
-import { UpdateUserAssistanceDto } from './dto/update-user_assistance.dto';
+import { FilterUserAssistanceDto } from './dto/filter-user_assistance.dto';
+import { RegisterAssistanceDto } from './dto/register_assistance.dto';
 import { UserAssistance } from './entities/user_assistance.entity';
 
 @Injectable()
@@ -26,20 +28,92 @@ export class UserAssistanceService {
     }
   }
 
-  async findAll() {
-    const userAssistance = await this.userAssistanceModel
-      .find({}, { __v: 0 })
-      .populate({
-        path: 'user',
-        select: 'name lastName documentType documentNumber role',
-        populate: { path: 'role documentType', select: 'name -_id' },
-      })
-      .populate({
-        path: 'assistances.status assistances.registeredBy',
-        select: 'name',
+  async findAll(filterUserAssistanceDto?: FilterUserAssistanceDto) {
+    const { month = 0, user = null } = filterUserAssistanceDto;
+
+    if (month === 0 && user === null) {
+      const userAssistances = await this.userAssistanceModel
+        .find({}, { __v: 0 })
+        .populate({
+          path: 'user',
+          select: 'name lastName documentType documentNumber role',
+          populate: { path: 'role documentType', select: 'name -_id' },
+        })
+        .populate({
+          path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
+          select: 'name',
+        });
+
+      return userAssistances;
+    } else if (month !== 0 && user === null) {
+      const userAssistances = await this.userAssistanceModel
+        .find({}, { __v: 0 })
+        .populate({
+          path: 'user',
+          select: 'name lastName documentType documentNumber role',
+          populate: { path: 'role documentType', select: 'name -_id' },
+        })
+        .populate({
+          path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
+          select: 'name code',
+        });
+
+      const assistancesByMonth = userAssistances.map((userAssistance) => {
+        const assistances = userAssistance.assistances.filter((assistance) => {
+          return new Date(assistance.checkInTime).getMonth() === month - 1;
+        });
+        return {
+          _id: userAssistance._id,
+          user: userAssistance.user,
+          assistances,
+        };
       });
 
-    return userAssistance;
+      return assistancesByMonth;
+    } else if (month === 0 && user !== null) {
+      const userAssistance = await this.userAssistanceModel
+        .findOne({ user: user }, { __v: 0 })
+        .populate({
+          path: 'user',
+          select: 'name lastName documentType documentNumber role',
+          populate: { path: 'role documentType', select: 'name -_id' },
+        })
+        .populate({
+          path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
+          select: 'name code',
+        });
+
+      return userAssistance;
+    } else if (month !== 0 && user !== null) {
+      const userAssistance = await this.userAssistanceModel
+        .findOne({ user: user }, { __v: 0 })
+        .populate({
+          path: 'user',
+          select: 'name lastName documentType documentNumber role',
+          populate: { path: 'role documentType', select: 'name -_id' },
+        })
+        .populate({
+          path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
+          select: 'name code',
+        });
+
+      if (!userAssistance) {
+        throw new BadRequestException(
+          `UserAssistance with id ${user} not found`,
+        );
+      }
+
+      const assistances = userAssistance.assistances.filter((assistance) => {
+        return new Date(assistance.checkInTime).getMonth() === month - 1;
+      });
+
+      return {
+        _id: userAssistance._id,
+        user: userAssistance.user,
+        assistances,
+      };
+    }
+    //TODO: Crear funcion para filter
   }
 
   async findOne(userId: string) {
@@ -51,7 +125,7 @@ export class UserAssistanceService {
         populate: { path: 'role documentType', select: 'name -_id' },
       })
       .populate({
-        path: 'assistances.status assistances.registeredBy',
+        path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
         select: 'name',
       });
     if (!userAssistance) {
@@ -62,9 +136,10 @@ export class UserAssistanceService {
     return userAssistance;
   }
 
-  async update(
+  async registerUserAssistance(
     userId: string,
-    updateUserAssistanceDto: UpdateUserAssistanceDto,
+    updateUserAssistanceDto: RegisterAssistanceDto,
+    user: User,
   ) {
     await this.findOne(userId);
     try {
@@ -72,10 +147,38 @@ export class UserAssistanceService {
         {
           user: userId,
         },
-        { $push: { assistances: updateUserAssistanceDto.assistances } },
+        {
+          $push: {
+            assistances: {
+              checkInTime: new Date(Date.now()),
+              status: updateUserAssistanceDto.assistances[0].status,
+              checkInTimeRegisteredBy: user._id,
+            },
+          },
+        },
         { new: true },
       );
-      return userAssistance;
+      return userAssistance.assistances[userAssistance.assistances.length - 1];
+    } catch (error) {
+      this.handleExceptions(error);
+    }
+  }
+
+  async registerUserCheckOutTime(assistanceId: string, user: User) {
+    try {
+      const userAssistance = await this.userAssistanceModel.findOneAndUpdate(
+        {
+          'assistances._id': assistanceId,
+        },
+        {
+          $set: {
+            'assistances.$.checkOutTime': new Date(Date.now()),
+            'assistances.$.checkOutTimeRegisteredBy': user._id,
+          },
+        },
+        { new: true },
+      );
+      return userAssistance.assistances[userAssistance.assistances.length - 1];
     } catch (error) {
       this.handleExceptions(error);
     }
@@ -98,7 +201,7 @@ export class UserAssistanceService {
               input: '$assistances',
               as: 'assistances',
               cond: {
-                $eq: [{ $month: '$$assistances.day' }, month],
+                $eq: [{ $month: '$$assistances.checkInTime' }, month],
               },
             },
           },
@@ -113,7 +216,7 @@ export class UserAssistanceService {
     });
 
     await this.userAssistanceModel.populate(userAssistance, {
-      path: 'assistances.status assistances.registeredBy',
+      path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
       select: 'name code',
     });
 
@@ -139,7 +242,7 @@ export class UserAssistanceService {
         populate: { path: 'role documentType', select: 'name -_id' },
       })
       .populate({
-        path: 'assistances.status assistances.registeredBy',
+        path: 'assistances.status assistances.checkInTimeRegisteredBy assistances.checkOutTimeRegisteredBy',
         select: 'name code',
       });
 
@@ -148,7 +251,7 @@ export class UserAssistanceService {
     }
 
     const assistances = userAssistance.assistances.filter((assistance) => {
-      return new Date(assistance.day).getMonth() === month - 1;
+      return new Date(assistance.checkInTime).getMonth() === month - 1;
     });
 
     return {

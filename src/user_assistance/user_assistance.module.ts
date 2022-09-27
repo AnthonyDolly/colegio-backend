@@ -8,6 +8,7 @@ import {
   UserAssistance,
   UserAssistanceSchema,
 } from './entities/user_assistance.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {
         schema: UserAssistanceSchema,
       },
     ]),
+    AuthModule,
   ],
   controllers: [UserAssistanceController],
   providers: [UserAssistanceService],

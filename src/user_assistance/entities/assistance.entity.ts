@@ -12,6 +12,7 @@ export class Assistance {
 
   @Prop({
     required: false,
+    default: null,
   })
   checkOutTime: Date;
 
@@ -27,9 +28,16 @@ export class Assistance {
     type: Types.ObjectId,
     ref: User.name,
     required: true,
-    index: true,
   })
-  registeredBy: User | Types.ObjectId;
+  checkInTimeRegisteredBy: User | Types.ObjectId;
+
+  @Prop({
+    type: Types.ObjectId,
+    ref: User.name,
+    required: false,
+    default: null,
+  })
+  checkOutTimeRegisteredBy: User | Types.ObjectId;
 }
 
 export const AssistanceSchema = SchemaFactory.createForClass(Assistance);
