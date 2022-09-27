@@ -1,10 +1,6 @@
 import { IsDate, IsMongoId, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateAssistanceDto {
-  @IsNotEmpty()
-  @IsDate()
-  day: Date;
-
   @IsOptional()
   @IsDate()
   checkInTime: Date;
@@ -17,7 +13,7 @@ export class CreateAssistanceDto {
   @IsMongoId()
   status: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
   registeredBy: string;
 }

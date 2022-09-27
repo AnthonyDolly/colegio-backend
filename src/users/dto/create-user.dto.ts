@@ -31,6 +31,10 @@ export class CreateUserDto {
   email?: string;
 
   @IsOptional()
+  @IsString()
+  password?: string;
+
+  @IsOptional()
   @IsPhoneNumber('PE')
   phone?: string;
 
@@ -39,6 +43,6 @@ export class CreateUserDto {
   landline?: string;
 
   @IsNotEmpty()
-  @IsMongoId()
+  @IsString()
   role: string;
 }

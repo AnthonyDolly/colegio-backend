@@ -7,12 +7,6 @@ import { User } from '../../users/entities/user.entity';
 export class Assistance {
   @Prop({
     required: true,
-    index: true,
-  })
-  day: Date;
-
-  @Prop({
-    required: false,
   })
   checkInTime: Date;
 
