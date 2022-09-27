@@ -6,6 +6,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User, UserSchema } from './entities/user.entity';
 import { UserAssistanceModule } from './../user_assistance/user_assistance.module';
+import { AuthModule } from './../auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UserAssistanceModule } from './../user_assistance/user_assistance.modul
       },
     ]),
     UserAssistanceModule,
+    AuthModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

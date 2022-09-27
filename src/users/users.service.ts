@@ -10,6 +10,7 @@ import { UserAssistanceService } from './../user_assistance/user_assistance.serv
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +21,11 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const user = await this.userModel.create(createUserDto);
+      const { password, ...userData } = createUserDto;
+      const user = await this.userModel.create({
+        ...userData,
+        password: bcrypt.hashSync(password, 10),
+      });
       await this.userAssistanceService.create({
         user: user._id.toString(),
         assistances: [],
