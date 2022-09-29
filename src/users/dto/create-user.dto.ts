@@ -1,12 +1,14 @@
 import { Schema } from '@nestjs/mongoose';
 import {
   IsEmail,
+  IsEnum,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
+import { ValidRoles } from './../../auth/interfaces';
 
 @Schema()
 export class CreateUserDto {
@@ -43,6 +45,10 @@ export class CreateUserDto {
   landline?: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsEnum(ValidRoles, {
+    message: `El rol debe ser uno de los siguientes: ${Object.values(
+      ValidRoles,
+    ).join(', ')}`,
+  })
   role: string;
 }

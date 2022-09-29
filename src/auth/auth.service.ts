@@ -34,14 +34,30 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
 
     return {
-      token: this.getJwt({ id: user.id }),
+      token: this.getJwt({
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        landline: user.landline,
+        role: user.role,
+      }),
     };
   }
 
   async checkAuthStatus(user: User) {
     return {
       ...user,
-      token: this.getJwt({ id: user.id }),
+      token: this.getJwt({
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        landline: user.landline,
+        role: user.role,
+      }),
     };
   }
 

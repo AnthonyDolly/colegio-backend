@@ -18,6 +18,11 @@ import { ValidRoles } from '..//auth/interfaces';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('roles')
+  getUserRoles() {
+    return this.usersService.getUserRoles();
+  }
+
   @Post()
   // @Auth(ValidRoles.ADMINISTRADOR)
   create(@Body() createUserDto: CreateUserDto) {
