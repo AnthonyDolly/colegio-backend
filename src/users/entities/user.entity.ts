@@ -31,6 +31,7 @@ export class User extends Document {
 
   @Prop({
     unique: true,
+    lowercase: true,
   })
   email: string;
 

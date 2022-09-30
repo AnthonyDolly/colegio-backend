@@ -27,6 +27,7 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...userData } = createUserDto;
+      console.log(createUserDto.role);
       if (createUserDto.role !== ValidRoles.ADMINISTRADOR) {
         createUserDto.password = null;
       } else {
@@ -34,6 +35,7 @@ export class UsersService {
       }
       const user = await this.userModel.create({
         ...userData,
+        password: createUserDto.password,
       });
       await this.userAssistanceService.create({
         user: user._id.toString(),
