@@ -59,13 +59,23 @@ export class UserAssistanceService {
         });
 
       const assistancesByMonth = userAssistances.map((userAssistance) => {
+        let monthlyHours = 0;
         const assistances = userAssistance.assistances.filter((assistance) => {
           return new Date(assistance.checkInTime).getMonth() === month - 1;
+        });
+        assistances.forEach((assistance) => {
+          assistance.checkOutTime
+            ? (monthlyHours +=
+                (assistance.checkOutTime.getTime() -
+                  assistance.checkInTime.getTime()) /
+                3600000)
+            : (monthlyHours += 0);
         });
         return {
           _id: userAssistance._id,
           user: userAssistance.user,
           assistances,
+          monthlyHours,
         };
       });
 
@@ -103,14 +113,25 @@ export class UserAssistanceService {
         );
       }
 
+      let monthlyHours = 0;
       const assistances = userAssistance.assistances.filter((assistance) => {
         return new Date(assistance.checkInTime).getMonth() === month - 1;
+      });
+
+      assistances.forEach((assistance) => {
+        assistance.checkOutTime
+          ? (monthlyHours +=
+              (assistance.checkOutTime.getTime() -
+                assistance.checkInTime.getTime()) /
+              3600000)
+          : (monthlyHours += 0);
       });
 
       return {
         _id: userAssistance._id,
         user: userAssistance.user,
         assistances,
+        monthlyHours,
       };
     }
     //TODO: Crear funcion para filter
