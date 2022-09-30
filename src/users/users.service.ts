@@ -27,9 +27,13 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...userData } = createUserDto;
+      if (createUserDto.role !== ValidRoles.ADMINISTRADOR) {
+        createUserDto.password = null;
+      } else {
+        createUserDto.password = await bcrypt.hash(password, 10);
+      }
       const user = await this.userModel.create({
         ...userData,
-        password: bcrypt.hashSync(password, 10),
       });
       await this.userAssistanceService.create({
         user: user._id.toString(),

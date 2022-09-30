@@ -30,6 +30,8 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException('Invalid credentials');
 
+    if (!user.password) throw new UnauthorizedException('Invalid credentials');
+
     if (!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Invalid credentials');
 
