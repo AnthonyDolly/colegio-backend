@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Status } from '../../statuses/entities/status.entity';
 import { Documenttype } from '../../documenttypes/entities/documenttype.entity';
 
 @Schema()

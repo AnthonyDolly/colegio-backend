@@ -44,7 +44,27 @@ export class UserAssistanceService {
           select: 'name',
         });
 
-      return userAssistances;
+      return {
+        userAssistances: userAssistances.map((userAssistance) => {
+          return {
+            _id: userAssistance._id,
+            user: userAssistance.user,
+            assistances: userAssistance.assistances,
+            checkInTimeToday:
+              userAssistance.assistances.length > 0
+                ? this.validateCheckInTimeToday(
+                    userAssistance.assistances.at(-1).checkInTime,
+                  )
+                : false,
+            checkOutTimeToday:
+              userAssistance.assistances.length > 0
+                ? this.validateCheckOutTimeToday(
+                    userAssistance.assistances.at(-1).checkOutTime,
+                  )
+                : false,
+          };
+        }),
+      };
     } else if (month !== 0 && user === null) {
       const userAssistances = await this.userAssistanceModel
         .find({}, { __v: 0 })
@@ -76,6 +96,18 @@ export class UserAssistanceService {
           user: userAssistance.user,
           assistances,
           monthlyHours,
+          checkInTimeToday:
+            userAssistance.assistances.length > 0
+              ? this.validateCheckInTimeToday(
+                  userAssistance.assistances.at(-1).checkInTime,
+                )
+              : false,
+          checkOutTimeToday:
+            userAssistance.assistances.length > 0
+              ? this.validateCheckOutTimeToday(
+                  userAssistance.assistances.at(-1).checkOutTime,
+                )
+              : false,
         };
       });
 
@@ -93,7 +125,23 @@ export class UserAssistanceService {
           select: 'name code',
         });
 
-      return userAssistance;
+      return {
+        _id: userAssistance._id,
+        user: userAssistance.user,
+        assistances: userAssistance.assistances,
+        checkInTimeToday:
+          userAssistance.assistances.length > 0
+            ? this.validateCheckInTimeToday(
+                userAssistance.assistances.at(-1).checkInTime,
+              )
+            : false,
+        checkOutTimeToday:
+          userAssistance.assistances.length > 0
+            ? this.validateCheckOutTimeToday(
+                userAssistance.assistances.at(-1).checkOutTime,
+              )
+            : false,
+      };
     } else if (month !== 0 && user !== null) {
       const userAssistance = await this.userAssistanceModel
         .findOne({ user: user }, { __v: 0 })
@@ -132,6 +180,18 @@ export class UserAssistanceService {
         user: userAssistance.user,
         assistances,
         monthlyHours,
+        checkInTimeToday:
+          userAssistance.assistances.length > 0
+            ? this.validateCheckInTimeToday(
+                userAssistance.assistances.at(-1).checkInTime,
+              )
+            : false,
+        checkOutTimeToday:
+          userAssistance.assistances.length > 0
+            ? this.validateCheckOutTimeToday(
+                userAssistance.assistances.at(-1).checkOutTime,
+              )
+            : false,
       };
     }
     //TODO: Crear funcion para filter
@@ -285,6 +345,25 @@ export class UserAssistanceService {
     if (month < 1 || month > 12) {
       throw new BadRequestException(`Month must be between 1 and 12`);
     }
+  }
+
+  private validateCheckInTimeToday(checkInTime: Date) {
+    const today = new Date(Date.now()).getDate();
+    if (checkInTime.getDate() === today) {
+      return true;
+    }
+    return false;
+  }
+
+  private validateCheckOutTimeToday(checkOutTime: Date) {
+    const today = new Date(Date.now()).getDate();
+    if (checkOutTime) {
+      if (checkOutTime.getDate() === today) {
+        return true;
+      }
+      return false;
+    }
+    return false;
   }
 
   private countTypeOfAssistances(assistances: any[]) {
