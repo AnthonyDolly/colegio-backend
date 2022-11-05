@@ -1,19 +1,19 @@
 import {
   IsArray,
   IsMongoId,
-  IsNotEmpty,
+  IsOptional,
   ValidateNested,
 } from 'class-validator';
 
 class AssistanceStatus {
-  @IsNotEmpty()
+  @IsOptional()
   @IsMongoId()
-  status: string;
+  status?: string;
 }
 
 export class RegisterAssistanceDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  assistances: AssistanceStatus[];
+  assistances?: AssistanceStatus[];
 }

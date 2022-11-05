@@ -2,9 +2,10 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import { CreateRequesttypeDto } from './dto/create-requesttype.dto';
 import { UpdateRequesttypeDto } from './dto/update-requesttype.dto';
 import { Requesttype } from './entities/requesttype.entity';
@@ -28,11 +29,22 @@ export class RequesttypesService {
     return await this.requesttypeModel.find();
   }
 
-  async findOne(id: string) {
-    const requesttype = await this.requesttypeModel.findById(id);
-    if (!requesttype) {
-      throw new BadRequestException(`Requesttype with id ${id} not found`);
+  async findOne(term: string) {
+    let requesttype: Requesttype;
+
+    if (isValidObjectId(term)) {
+      requesttype = await this.requesttypeModel.findById(term);
+      if (requesttype) return requesttype;
     }
+
+    if (!isNaN(Number(term))) {
+      requesttype = await this.requesttypeModel.findOne({ code: Number(term) });
+      if (requesttype) return requesttype;
+    }
+
+    if (!requesttype)
+      throw new NotFoundException(`requesttype with ${term} not found`);
+
     return requesttype;
   }
 

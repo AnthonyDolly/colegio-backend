@@ -41,13 +41,13 @@ export class UserAssistanceController {
   @Auth(ValidRoles.ADMINISTRADOR)
   registerUserAssistance(
     @Param('userId', ValidateMongoIdPipe) userId: string,
-    @Body() updateUserAssistanceDto: RegisterAssistanceDto,
     @GetUser() user: User,
+    @Body() registerAssistanceDto?: RegisterAssistanceDto,
   ) {
     return this.userAssistanceService.registerUserAssistance(
       userId,
-      updateUserAssistanceDto,
       user,
+      registerAssistanceDto,
     );
   }
 

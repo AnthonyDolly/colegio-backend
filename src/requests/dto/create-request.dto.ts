@@ -1,19 +1,25 @@
-import { IsDate, IsMongoId, IsNotEmpty } from 'class-validator';
+import {
+  IsDate,
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateRequestDto {
-  @IsMongoId()
-  @IsNotEmpty()
-  user: string;
-
   @IsMongoId()
   @IsNotEmpty()
   requestType: string;
 
   @IsDate()
   @IsNotEmpty()
-  day: Date;
+  startDate: Date;
 
-  @IsMongoId()
+  @IsDate()
   @IsNotEmpty()
-  reviewedBy: string;
+  endDate: Date;
+
+  @IsString()
+  @IsOptional()
+  description: string;
 }

@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Requesttype } from 'src/requesttypes/entities/requesttype.entity';
-import { Status } from 'src/statuses/entities/status.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Requesttype } from './../../requesttypes/entities/requesttype.entity';
+import { Status } from './../../statuses/entities/status.entity';
+import { User } from './../../users/entities/user.entity';
 
 @Schema()
 export class Request extends Document {
@@ -24,7 +24,22 @@ export class Request extends Document {
   @Prop({
     required: true,
   })
-  day: Date;
+  startDate: Date;
+
+  @Prop({
+    required: true,
+  })
+  endDate: Date;
+
+  @Prop({
+    required: false,
+  })
+  description: string;
+
+  @Prop({
+    required: false,
+  })
+  file: string;
 
   @Prop({
     type: Types.ObjectId,
@@ -36,7 +51,8 @@ export class Request extends Document {
   @Prop({
     type: Types.ObjectId,
     ref: User.name,
-    required: true,
+    required: false,
+    default: null,
   })
   reviewedBy: User | Types.ObjectId;
 }

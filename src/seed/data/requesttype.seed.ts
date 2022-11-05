@@ -6,32 +6,42 @@ export const REQUESTTYPE_SEED: any[] = [
   },
   {
     code: 2,
-    name: 'Solicitud de Permiso',
+    name: 'Solicitud de Permiso para ingresar tarde',
     isActive: true,
   },
   {
     code: 3,
-    name: 'Solicitud de Licencia',
+    name: 'Solicitud de Permiso para salir temprano',
     isActive: true,
   },
   {
     code: 4,
-    name: 'Solicitud de Baja',
+    name: 'Solicitud de Descanso Médico',
     isActive: true,
   },
   {
     code: 5,
-    name: 'Solicitud de Cambio de Horario',
+    name: 'Solicitud de Licencia por Maternidad',
     isActive: true,
   },
   {
     code: 6,
-    name: 'Solicitud de Cambio de Turno',
+    name: 'Solicitud de Licencia por Paternidad',
     isActive: true,
   },
   {
     code: 7,
-    name: 'Solicitud de Cambio de Puesto',
+    name: 'Solicitud de Licencia por Matrimonio',
+    isActive: true,
+  },
+  {
+    code: 8,
+    name: 'Solicitud de Licencia por Fallecimiento',
+    isActive: true,
+  },
+  {
+    code: 9,
+    name: 'Solicitud de Cambio de Turno',
     isActive: true,
   },
 ];

@@ -18,6 +18,6 @@ import { Status, StatusSchema } from './entities/status.entity';
   ],
   controllers: [StatusesController],
   providers: [StatusesService],
-  exports: [MongooseModule],
+  exports: [MongooseModule, StatusesService],
 })
 export class StatusesModule {}

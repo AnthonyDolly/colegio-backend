@@ -13,7 +13,7 @@ import { UserAssistanceModule } from './user_assistance/user_assistance.module';
 import { RequesttypesModule } from './requesttypes/requesttypes.module';
 import { RequestsModule } from './requests/requests.module';
 import { AuthModule } from './auth/auth.module';
-
+import { CheckInTimeModule } from './check-in-time/check-in-time.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     RequesttypesModule,
     RequestsModule,
     AuthModule,
+    CheckInTimeModule,
   ],
   controllers: [],
   providers: [],

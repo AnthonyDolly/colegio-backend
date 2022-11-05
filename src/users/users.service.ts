@@ -27,12 +27,9 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...userData } = createUserDto;
-      console.log(createUserDto.role);
-      if (createUserDto.role !== ValidRoles.ADMINISTRADOR) {
-        createUserDto.password = null;
-      } else {
-        createUserDto.password = await bcrypt.hash(password, 10);
-      }
+
+      createUserDto.password = await bcrypt.hash(password, 10);
+
       const user = await this.userModel.create({
         ...userData,
         password: createUserDto.password,

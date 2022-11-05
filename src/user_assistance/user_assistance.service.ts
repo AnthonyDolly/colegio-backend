@@ -1,22 +1,30 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CheckInTimeService } from './../check-in-time/check-in-time.service';
 import { User } from 'src/users/entities/user.entity';
 
 import { CreateUserAssistanceDto } from './dto/create-user_assistance.dto';
 import { FilterUserAssistanceDto } from './dto/filter-user_assistance.dto';
 import { RegisterAssistanceDto } from './dto/register_assistance.dto';
 import { UserAssistance } from './entities/user_assistance.entity';
+import { Status } from './../statuses/entities/status.entity';
+import { StatusesService } from './../statuses/statuses.service';
+import { RequestsService } from './../requests/requests.service';
 
 @Injectable()
 export class UserAssistanceService {
   constructor(
     @InjectModel(UserAssistance.name)
     private readonly userAssistanceModel: Model<UserAssistance>,
+    private readonly checkInTimeService: CheckInTimeService,
+    private readonly statusesService: StatusesService,
   ) {}
 
   async create(createUserAssistanceDto: CreateUserAssistanceDto) {
@@ -62,6 +70,7 @@ export class UserAssistanceService {
                     userAssistance.assistances.at(-1).checkOutTime,
                   )
                 : false,
+            permission: true,
           };
         }),
       };
@@ -219,10 +228,38 @@ export class UserAssistanceService {
 
   async registerUserAssistance(
     userId: string,
-    updateUserAssistanceDto: RegisterAssistanceDto,
     user: User,
+    registerAssistanceDto?: RegisterAssistanceDto,
   ) {
     await this.findOne(userId);
+
+    let status: Status;
+
+    console.log(registerAssistanceDto);
+
+    if (!registerAssistanceDto.assistances) {
+      const checkInTime = await this.checkInTimeService.findAll();
+
+      const hour = new Date().getHours();
+      const hourString = hour.toString();
+
+      const minutes = new Date().getMinutes();
+      const minutesString = minutes.toString();
+
+      const time =
+        (hourString.length < 2 ? '0' + hourString : hourString) +
+        ':' +
+        (minutesString.length < 2 ? '0' + minutesString : minutesString);
+
+      if (checkInTime.hour > time) {
+        status = await this.statusesService.findOne('1');
+      } else {
+        status = await this.statusesService.findOne('2');
+      }
+    } else {
+      status = await this.statusesService.findOne('3');
+    }
+
     try {
       const userAssistance = await this.userAssistanceModel.findOneAndUpdate(
         {
@@ -232,13 +269,14 @@ export class UserAssistanceService {
           $push: {
             assistances: {
               checkInTime: new Date(Date.now()),
-              status: updateUserAssistanceDto.assistances[0].status,
+              status,
               checkInTimeRegisteredBy: user._id,
             },
           },
         },
         { new: true },
       );
+
       return userAssistance.assistances[userAssistance.assistances.length - 1];
     } catch (error) {
       this.handleExceptions(error);
@@ -365,6 +403,10 @@ export class UserAssistanceService {
     }
     return false;
   }
+
+  // private validateIfUserHasPermission(user: User) {
+
+  // }
 
   private countTypeOfAssistances(assistances: any[]) {
     const assistancesCount = {

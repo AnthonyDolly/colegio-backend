@@ -26,9 +26,9 @@ export class RequesttypesController {
     return this.requesttypesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ValidateMongoIdPipe) id: string) {
-    return this.requesttypesService.findOne(id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.requesttypesService.findOne(term);
   }
 
   @Patch(':id')

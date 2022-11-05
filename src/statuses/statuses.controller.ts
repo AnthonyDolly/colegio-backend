@@ -26,9 +26,9 @@ export class StatusesController {
     return this.statusesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ValidateMongoIdPipe) id: string) {
-    return this.statusesService.findOne(id);
+  @Get(':term')
+  findOne(@Param('term') term: string) {
+    return this.statusesService.findOne(term);
   }
 
   @Patch(':id')

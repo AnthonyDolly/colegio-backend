@@ -22,6 +22,6 @@ import { AuthModule } from './../auth/auth.module';
   ],
   controllers: [UsersController],
   providers: [UsersService],
-  exports: [MongooseModule],
+  exports: [MongooseModule, UsersService],
 })
 export class UsersModule {}
