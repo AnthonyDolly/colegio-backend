@@ -44,7 +44,7 @@ export class UserAssistanceService {
         .find({}, { __v: 0 })
         .populate({
           path: 'user',
-          select: 'name lastName documentType documentNumber role',
+          select: 'name lastName documentType documentNumber role isActive',
           populate: { path: 'role documentType', select: 'name -_id' },
         })
         .populate({
@@ -54,24 +54,25 @@ export class UserAssistanceService {
 
       return {
         userAssistances: userAssistances.map((userAssistance) => {
-          return {
-            _id: userAssistance._id,
-            user: userAssistance.user,
-            assistances: userAssistance.assistances,
-            checkInTimeToday:
-              userAssistance.assistances.length > 0
-                ? this.validateCheckInTimeToday(
-                    userAssistance.assistances.at(-1).checkInTime,
-                  )
-                : false,
-            checkOutTimeToday:
-              userAssistance.assistances.length > 0
-                ? this.validateCheckOutTimeToday(
-                    userAssistance.assistances.at(-1).checkOutTime,
-                  )
-                : false,
-            permission: true,
-          };
+          if (userAssistance.user['isActive'] == true) {
+            return {
+              _id: userAssistance._id,
+              user: userAssistance.user,
+              assistances: userAssistance.assistances,
+              checkInTimeToday:
+                userAssistance.assistances.length > 0
+                  ? this.validateCheckInTimeToday(
+                      userAssistance.assistances.at(-1).checkInTime,
+                    )
+                  : false,
+              checkOutTimeToday:
+                userAssistance.assistances.length > 0
+                  ? this.validateCheckOutTimeToday(
+                      userAssistance.assistances.at(-1).checkOutTime,
+                    )
+                  : false,
+            };
+          }
         }),
       };
     } else if (month !== 0 && user === null) {

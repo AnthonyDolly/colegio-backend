@@ -11,7 +11,6 @@ import {
 import { CheckInTimeModule } from './../check-in-time/check-in-time.module';
 import { AuthModule } from '../auth/auth.module';
 import { StatusesModule } from './../statuses/statuses.module';
-import { RequesttypesModule } from './../requesttypes/requesttypes.module';
 
 @Module({
   imports: [

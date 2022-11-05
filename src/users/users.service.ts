@@ -69,7 +69,7 @@ export class UsersService {
 
   async remove(id: string) {
     await this.findOne(id);
-    return await this.userModel.findByIdAndDelete(id);
+    return await this.userModel.findByIdAndUpdate(id, { isActive: false });
   }
 
   private handleExceptions(error: any) {
