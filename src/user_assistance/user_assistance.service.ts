@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  forwardRef,
-  Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -25,6 +23,7 @@ export class UserAssistanceService {
     private readonly userAssistanceModel: Model<UserAssistance>,
     private readonly checkInTimeService: CheckInTimeService,
     private readonly statusesService: StatusesService,
+    private readonly requestsService: RequestsService,
   ) {}
 
   async create(createUserAssistanceDto: CreateUserAssistanceDto) {
@@ -71,6 +70,7 @@ export class UserAssistanceService {
                       userAssistance.assistances.at(-1).checkOutTime,
                     )
                   : false,
+              permission: true,
             };
           }
         }),
@@ -405,8 +405,20 @@ export class UserAssistanceService {
     return false;
   }
 
-  // private validateIfUserHasPermission(user: User) {
-
+  // check if user is on vacation
+  // private async validateUserIsOnVacation(userId: string) {
+  //   const userVacations = await this.requestsService.findAllByUser(userId);
+  //   const today = new Date(Date.now());
+  //   const userIsOnVacation = userVacations.some((userVacation) => {
+  //     return (
+  //       userVacation.startDate <= today &&
+  //       userVacation.endDate >= today &&
+  //       userVacation.status.code === '1'
+  //     );
+  //   });
+  //   if (userIsOnVacation) {
+  //     throw new BadRequestException(`User is on vacation`);
+  //   }
   // }
 
   private countTypeOfAssistances(assistances: any[]) {

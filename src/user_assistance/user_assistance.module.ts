@@ -11,6 +11,7 @@ import {
 import { CheckInTimeModule } from './../check-in-time/check-in-time.module';
 import { AuthModule } from '../auth/auth.module';
 import { StatusesModule } from './../statuses/statuses.module';
+import { RequestsModule } from './../requests/requests.module';
 
 @Module({
   imports: [
@@ -21,9 +22,10 @@ import { StatusesModule } from './../statuses/statuses.module';
         schema: UserAssistanceSchema,
       },
     ]),
-    CheckInTimeModule,
-    StatusesModule,
     AuthModule,
+    StatusesModule,
+    CheckInTimeModule,
+    RequestsModule,
   ],
   controllers: [UserAssistanceController],
   providers: [UserAssistanceService],

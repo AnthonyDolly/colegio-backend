@@ -26,7 +26,9 @@ export class RequesttypesService {
   }
 
   async findAll() {
-    return await this.requesttypeModel.find();
+    return await this.requesttypeModel.find({
+      code: { $nin: [2, 3] },
+    });
   }
 
   async findOne(term: string) {

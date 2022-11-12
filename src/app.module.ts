@@ -14,6 +14,7 @@ import { RequesttypesModule } from './requesttypes/requesttypes.module';
 import { RequestsModule } from './requests/requests.module';
 import { AuthModule } from './auth/auth.module';
 import { CheckInTimeModule } from './check-in-time/check-in-time.module';
+import { UserRolesModule } from './user-roles/user-roles.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,6 +32,7 @@ import { CheckInTimeModule } from './check-in-time/check-in-time.module';
     RequestsModule,
     AuthModule,
     CheckInTimeModule,
+    UserRolesModule,
   ],
   controllers: [],
   providers: [],

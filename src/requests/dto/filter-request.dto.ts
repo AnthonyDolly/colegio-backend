@@ -1,11 +1,15 @@
 import { IsInt, IsMongoId, IsOptional } from 'class-validator';
 
 export class FilterRequestDto {
+  @IsInt()
+  @IsOptional()
+  month?: number;
+
   @IsMongoId()
   @IsOptional()
   userId?: string;
 
-  @IsInt()
+  @IsMongoId()
   @IsOptional()
-  month?: number;
+  status?: string;
 }

@@ -6,8 +6,8 @@ import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
 import { Request } from './entities/request.entity';
 import { User } from './../users/entities/user.entity';
-import { UsersService } from './../users/users.service';
 import { FilterRequestDto } from './dto/filter-request.dto';
+import { UserRolesService } from './../user-roles/user-roles.service';
 
 @Injectable()
 export class RequestsService {
@@ -15,7 +15,7 @@ export class RequestsService {
     @InjectModel(Request.name)
     private readonly requestsModel: Model<Request>,
     private readonly statusesService: StatusesService,
-    private readonly usersService: UsersService,
+    private readonly userRolesService: UserRolesService,
   ) {}
 
   async create(createRequestDto: CreateRequestDto, user: User) {
@@ -29,15 +29,17 @@ export class RequestsService {
   }
 
   async findAll(filterRequestDto: FilterRequestDto, user: User) {
-    const { month = 0, userId = null } = filterRequestDto;
+    const { month = 0, userId = null, status = null } = filterRequestDto;
 
-    const userRole = await this.usersService.findOne(user._id);
+    const userRole = await this.userRolesService.findOne(user._id);
 
     let requests: Request[];
     const date = new Date();
 
-    if (userRole.role === 'Administrador') {
-      if (month === 0 && userId === null) {
+    console.log(userRole.role);
+
+    if (userRole.role === 'administrador') {
+      if (month === 0 && userId === null && status === null) {
         requests = await this.requestsModel
           .find()
           .populate({
@@ -59,7 +61,7 @@ export class RequestsService {
             }
           });
         }
-      } else if (month !== 0 && userId === null) {
+      } else if (month !== 0 && userId === null && status === null) {
         requests = await this.requestsModel
           .find({
             createdAt: {
@@ -86,7 +88,7 @@ export class RequestsService {
             }
           });
         }
-      } else if (month === 0 && userId !== null) {
+      } else if (month === 0 && userId !== null && status === null) {
         requests = await this.requestsModel
           .find({ user: new Types.ObjectId(userId) })
           .populate({
@@ -108,7 +110,29 @@ export class RequestsService {
             }
           });
         }
-      } else if (month !== 0 && userId !== null) {
+      } else if (month === 0 && userId === null && status !== null) {
+        requests = await this.requestsModel
+          .find({ status: new Types.ObjectId(status) })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
+      } else if (month !== 0 && userId !== null && status === null) {
         requests = await this.requestsModel
           .find({
             createdAt: {
@@ -116,6 +140,88 @@ export class RequestsService {
               $lt: new Date(new Date().getFullYear(), month, 1),
             },
             user: new Types.ObjectId(userId),
+          })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
+      } else if (month !== 0 && userId === null && status !== null) {
+        requests = await this.requestsModel
+          .find({
+            createdAt: {
+              $gte: new Date(new Date().getFullYear(), month - 1, 1),
+              $lt: new Date(new Date().getFullYear(), month, 1),
+            },
+            status: new Types.ObjectId(status),
+          })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
+      } else if (month === 0 && userId !== null && status !== null) {
+        requests = await this.requestsModel
+          .find({
+            user: new Types.ObjectId(userId),
+            status: new Types.ObjectId(status),
+          })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
+      } else if (month !== 0 && userId !== null && status !== null) {
+        requests = await this.requestsModel
+          .find({
+            createdAt: {
+              $gte: new Date(new Date().getFullYear(), month - 1, 1),
+              $lt: new Date(new Date().getFullYear(), month, 1),
+            },
+            user: new Types.ObjectId(userId),
+            status: new Types.ObjectId(status),
           })
           .populate({
             path: 'user requestType status reviewedBy',
