@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { StatusesService } from './../statuses/statuses.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { UpdateRequestDto } from './dto/update-request.dto';
@@ -9,6 +9,7 @@ import { User } from './../users/entities/user.entity';
 import { UsersService } from './../users/users.service';
 import { RequesttypesService } from './../requesttypes/requesttypes.service';
 import { UserAssistanceService } from './../user_assistance/user_assistance.service';
+import { FilterRequestDto } from './dto/filter-request.dto';
 
 @Injectable()
 export class RequestsService {
@@ -29,35 +30,125 @@ export class RequestsService {
     });
   }
 
-  async findAll(user: User) {
+  async findAll(filterRequestDto: FilterRequestDto, user: User) {
+    const { month = 0, userId = null } = filterRequestDto;
+
     const userRole = await this.usersService.findOne(user._id);
 
     let requests: Request[];
     const date = new Date();
+    console.log(date.getMonth());
 
-    if (userRole.role === 'administrador') {
-      requests = await this.requestsModel.find().populate({
-        path: 'user requestType status reviewedBy',
-        select: 'name -_id',
-      });
-      if (requests) {
-        requests.forEach(async (request) => {
-          if (request.status['name'] === 'Aprobado') {
-            if (date > request.startDate && date < request.endDate) {
-              request.status = await this.statusesService.findOne('8');
-              await request.save();
-            } else if (date > request.endDate) {
-              request.status = await this.statusesService.findOne('9');
-              await request.save();
+    if (userRole.role === 'Administrador') {
+      if (month === 0 && userId === null) {
+        requests = await this.requestsModel
+          .find()
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
             }
-          }
-        });
+          });
+        }
+      } else if (month !== 0 && userId === null) {
+        requests = await this.requestsModel
+          .find({
+            createdAt: {
+              $gte: new Date(new Date().getFullYear(), month - 1, 1),
+              $lt: new Date(new Date().getFullYear(), month, 1),
+            },
+          })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
+      } else if (month === 0 && userId !== null) {
+        requests = await this.requestsModel
+          .find({ user: new Types.ObjectId(userId) })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
+      } else if (month !== 0 && userId !== null) {
+        requests = await this.requestsModel
+          .find({
+            createdAt: {
+              $gte: new Date(new Date().getFullYear(), month - 1, 1),
+              $lt: new Date(new Date().getFullYear(), month, 1),
+            },
+            user: new Types.ObjectId(userId),
+          })
+          .populate({
+            path: 'user requestType status reviewedBy',
+            select: 'name -_id',
+          })
+          .sort({ createdAt: -1 });
+
+        if (requests) {
+          requests.forEach(async (request) => {
+            if (request.status['name'] === 'Aprobado') {
+              if (date > request.startDate && date < request.endDate) {
+                request.status = await this.statusesService.findOne('8');
+                await request.save();
+              } else if (date > request.endDate) {
+                request.status = await this.statusesService.findOne('9');
+                await request.save();
+              }
+            }
+          });
+        }
       }
     } else {
-      requests = await this.requestsModel.find({ user: user._id }).populate({
-        path: 'user requestType status reviewedBy',
-        select: 'name -_id',
-      });
+      requests = await this.requestsModel
+        .find({ user: user._id })
+        .populate({
+          path: 'user requestType status reviewedBy',
+          select: 'name -_id',
+        })
+        .sort({ createdAt: -1 });
+
       if (requests) {
         requests.forEach(async (request) => {
           if (request.status['name'] === 'Aprobado') {

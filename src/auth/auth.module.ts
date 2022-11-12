@@ -25,7 +25,7 @@ import { User, UserSchema } from './../users/entities/user.entity';
         // console.log(process.env.JWT_SECRET);
         return {
           secret: process.env.JWT_SECRET,
-          signOptions: { expiresIn: '2h' },
+          signOptions: { expiresIn: '24h' },
         };
       },
     }),
