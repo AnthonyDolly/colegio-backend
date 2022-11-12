@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { StatusesService } from './../statuses/statuses.service';
@@ -7,8 +7,6 @@ import { UpdateRequestDto } from './dto/update-request.dto';
 import { Request } from './entities/request.entity';
 import { User } from './../users/entities/user.entity';
 import { UsersService } from './../users/users.service';
-import { RequesttypesService } from './../requesttypes/requesttypes.service';
-import { UserAssistanceService } from './../user_assistance/user_assistance.service';
 import { FilterRequestDto } from './dto/filter-request.dto';
 
 @Injectable()
@@ -37,7 +35,6 @@ export class RequestsService {
 
     let requests: Request[];
     const date = new Date();
-    console.log(date.getMonth());
 
     if (userRole.role === 'Administrador') {
       if (month === 0 && userId === null) {

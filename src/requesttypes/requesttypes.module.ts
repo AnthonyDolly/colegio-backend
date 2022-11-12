@@ -5,7 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RequesttypesService } from './requesttypes.service';
 import { RequesttypesController } from './requesttypes.controller';
 import { Requesttype, RequesttypeSchema } from './entities/requesttype.entity';
-import { RequestsModule } from './../requests/requests.module';
 
 @Module({
   imports: [
@@ -16,7 +15,6 @@ import { RequestsModule } from './../requests/requests.module';
         schema: RequesttypeSchema,
       },
     ]),
-    RequestsModule,
   ],
   controllers: [RequesttypesController],
   providers: [RequesttypesService],
