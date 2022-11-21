@@ -31,4 +31,4 @@ services:
     environment:
       MONGODB_DATABASE: colegio-FeyAlegria
     volumes:
-      - ./mongo:/data/db
+      - ./mongo/colegio-FeyAlegria:/data/db
