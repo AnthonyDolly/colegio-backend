@@ -32,7 +32,3 @@ services:
       MONGODB_DATABASE: colegio-FeyAlegria
     volumes:
       - ./mongo:/data/db
-
-networks:
-  default:
-    name: colegio-network
