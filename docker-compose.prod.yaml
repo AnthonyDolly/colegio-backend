@@ -23,6 +23,7 @@ services:
 
   db:
     image: mongo:5
+    command: mongod --port 27017
     container_name: mongo-colegio
     restart: always
     ports:
@@ -31,3 +32,7 @@ services:
       MONGODB_DATABASE: colegio-FeyAlegria
     volumes:
       - ./mongo:/data/db
+
+networks:
+  default:
+    name: colegio-network
