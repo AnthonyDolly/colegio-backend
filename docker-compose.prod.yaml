@@ -3,7 +3,7 @@ version: '3'
 services:
   colegiobapp:
     depends_on:
-      - db
+      - db-colegio
     build:
       context: .
       dockerfile: Dockerfile
@@ -23,7 +23,7 @@ services:
     # volumes:
     #   - ./:/var/www/pokedex
 
-  db:
+  db-colegio:
     image: mongo:5
     command: mongod --port 27017
     container_name: mongo-colegio
