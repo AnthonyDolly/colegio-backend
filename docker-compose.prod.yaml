@@ -12,6 +12,8 @@ services:
     restart: always # reiniciar el contenedor si se detiene
     ports:
       - '${PORT}:${PORT}'
+    networks:
+      - colegiob-network
     # working_dir: /var/www/pokedex
     environment:
       MONGODB: ${MONGODB}
@@ -32,3 +34,8 @@ services:
       MONGODB_DATABASE: colegio-FeyAlegria
     volumes:
       - ./mongo/colegio-FeyAlegria:/data/db
+    networks:
+      - colegiob-network
+
+networks:
+  colegiob-network:
