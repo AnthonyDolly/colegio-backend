@@ -236,23 +236,18 @@ export class UserAssistanceService {
 
     let status: Status;
 
-    console.log(registerAssistanceDto);
-
     if (!registerAssistanceDto.assistances) {
       const checkInTime = await this.checkInTimeService.findAll();
 
-      const hour = new Date().getHours();
-      const hourString = hour.toString();
+      //Obtener hora actual de Perú
+      let hourLima = new Date().toLocaleTimeString('en-US', {
+        timeZone: 'America/Lima',
+        hourCycle: 'h24',
+      });
 
-      const minutes = new Date().getMinutes();
-      const minutesString = minutes.toString();
+      hourLima = hourLima.split(':')[0] + ':' + hourLima.split(':')[1];
 
-      const time =
-        (hourString.length < 2 ? '0' + hourString : hourString) +
-        ':' +
-        (minutesString.length < 2 ? '0' + minutesString : minutesString);
-
-      if (checkInTime.hour > time) {
+      if (checkInTime.hour > hourLima) {
         status = await this.statusesService.findOne('1');
       } else {
         status = await this.statusesService.findOne('2');
