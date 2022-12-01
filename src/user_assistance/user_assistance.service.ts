@@ -265,7 +265,7 @@ export class UserAssistanceService {
           $push: {
             assistances: {
               checkInTime: new Date(Date.now()),
-              status,
+              status: status.id,
               checkInTimeRegisteredBy: user._id,
             },
           },

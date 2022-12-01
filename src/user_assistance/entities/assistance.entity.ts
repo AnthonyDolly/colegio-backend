@@ -20,7 +20,6 @@ export class Assistance {
     type: Types.ObjectId,
     ref: Status.name,
     required: true,
-    index: true,
   })
   status: Status | Types.ObjectId;
 
