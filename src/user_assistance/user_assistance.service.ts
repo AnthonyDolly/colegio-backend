@@ -264,7 +264,9 @@ export class UserAssistanceService {
         {
           $push: {
             assistances: {
-              checkInTime: new Date(Date.now()),
+              checkInTime: new Date(
+                new Date().toLocaleString('en', { timeZone: 'America/Lima' }),
+              ),
               status: status.id,
               checkInTimeRegisteredBy: user.id,
             },
@@ -287,7 +289,9 @@ export class UserAssistanceService {
         },
         {
           $set: {
-            'assistances.$.checkOutTime': new Date(Date.now()),
+            'assistances.$.checkOutTime': new Date(
+              new Date().toLocaleString('en', { timeZone: 'America/Lima' }),
+            ),
             'assistances.$.checkOutTimeRegisteredBy': user.id,
           },
         },
