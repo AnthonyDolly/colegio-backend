@@ -266,7 +266,7 @@ export class UserAssistanceService {
             assistances: {
               checkInTime: new Date(Date.now()),
               status: status.id,
-              checkInTimeRegisteredBy: user._id,
+              checkInTimeRegisteredBy: user.id,
             },
           },
         },
@@ -288,7 +288,7 @@ export class UserAssistanceService {
         {
           $set: {
             'assistances.$.checkOutTime': new Date(Date.now()),
-            'assistances.$.checkOutTimeRegisteredBy': user._id,
+            'assistances.$.checkOutTimeRegisteredBy': user.id,
           },
         },
         { new: true },
