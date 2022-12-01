@@ -386,7 +386,9 @@ export class UserAssistanceService {
   }
 
   private validateCheckInTimeToday(checkInTime: Date) {
-    const today = new Date(Date.now()).getDate();
+    const today = new Date(
+      new Date().toLocaleString('en', { timeZone: 'America/Lima' }),
+    ).getDate();
     if (checkInTime.getDate() === today) {
       return true;
     }
@@ -394,7 +396,9 @@ export class UserAssistanceService {
   }
 
   private validateCheckOutTimeToday(checkOutTime: Date) {
-    const today = new Date(Date.now()).getDate();
+    const today = new Date(
+      new Date().toLocaleString('en', { timeZone: 'America/Lima' }),
+    ).getDate();
     if (checkOutTime) {
       if (checkOutTime.getDate() === today) {
         return true;
